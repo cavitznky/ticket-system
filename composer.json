@@ -1,10 +1,13 @@
 {
-    "name": "cavitznky/ticket-system",
-    "description": "This is my package ticket-system",
+    "name": "digitalcake/ticket-system",
+    "description": "A comprehensive ticket system for Laravel applications with multi-language support",
     "keywords": [
-        "Digitalcake",
+        "digitalcake",
         "laravel",
-        "ticket-system"
+        "ticket-system",
+        "livewire",
+        "support",
+        "helpdesk"
     ],
     "homepage": "https://github.com/cavitznky/ticket-system",
     "license": "MIT",
