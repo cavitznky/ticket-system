@@ -7,7 +7,7 @@ A comprehensive ticket system for Laravel applications.
 You can install the package via composer:
 
 ```bash
-composer require digitalcake/ticket-system
+composer require cavitznky/ticket-system
 ```
 
 ## Publishing Assets
