@@ -3,7 +3,7 @@
 return [
     'title' => 'Destek Talepleri',
     'admin_badge' => 'Admin',
-    'new_ticket' => 'Yeni Ticket',
+    'new_ticket' => 'Yeni Destek Talebi',
     'status' => [
         'all' => 'Durum: Tümü',
         'open' => 'Açık',
@@ -32,16 +32,16 @@ return [
         'created_at' => 'Oluşturulma',
         'actions' => 'İşlemler',
     ],
-    'no_tickets' => 'Henüz ticket bulunmuyor',
+    'no_tickets' => 'Henüz destek talebi bulunmuyor',
     'modal' => [
         'create' => [
-            'title' => 'Yeni Ticket Oluştur',
+            'title' => 'Yeni Destek Talebi Oluştur',
             'form' => [
                 'title' => 'Başlık',
                 'description' => 'Açıklama',
                 'priority' => 'Öncelik',
                 'placeholder' => [
-                    'title' => 'Ticket başlığını girin...',
+                    'title' => 'Destek talebi başlığını girin...',
                     'description' => 'Sorununuzu detaylı olarak açıklayın...',
                 ],
                 'validation' => [
@@ -56,14 +56,14 @@ return [
             ],
         ],
         'edit' => [
-            'title' => 'Ticket Düzenle',
+            'title' => 'Destek Talebini Düzenle',
             'buttons' => [
                 'cancel' => 'İptal',
                 'update' => 'Güncelle',
             ],
         ],
         'response' => [
-            'title' => 'Ticket Yanıtla',
+            'title' => 'Destek Talebini Yanıtla',
             'responses_title' => 'Yanıtlar',
             'form' => [
                 'placeholder' => 'Yanıtınızı buraya yazın...',
@@ -82,20 +82,20 @@ return [
         'mark_in_progress' => 'İşleme Al',
         'mark_resolved' => 'Çözüldü İşaretle',
         'close' => 'Kapat',
-        'delete' => 'Ticket Sil',
+        'delete' => 'Destek Talebi Sil',
     ],
     'messages' => [
-        'created' => 'Ticket başarıyla oluşturuldu.',
-        'updated' => 'Ticket başarıyla güncellendi.',
+        'created' => 'Destek talebi başarıyla oluşturuldu.',
+        'updated' => 'Destek talebi başarıyla güncellendi.',
         'responded' => 'Yanıtınız başarıyla kaydedildi.',
-        'status_changed' => 'Ticket durumu güncellendi.',
-        'deleted' => 'Ticket başarıyla silindi.',
+        'status_changed' => 'Destek talebi durumu güncellendi.',
+        'deleted' => 'Destek talebi başarıyla silindi.',
         'no_permission' => 'Bu işlemi gerçekleştirmek için yetkiniz yok.',
-        'no_edit_permission' => 'Bu ticketı düzenleme yetkiniz yok.',
-        'no_status_permission' => 'Bu ticketın durumunu değiştirme yetkiniz yok.',
-        'no_delete_permission' => 'Bu ticketı silme yetkiniz yok.',
-        'invalid_ticket' => 'Geçersiz ticket ID.',
+        'no_edit_permission' => 'Bu destek talebini düzenleme yetkiniz yok.',
+        'no_status_permission' => 'Bu destek talebinin durumunu değiştirme yetkiniz yok.',
+        'no_delete_permission' => 'Bu destek talebini silme yetkiniz yok.',
+        'invalid_ticket' => 'Geçersiz destek talebi ID.',
     ],
     'unknown' => 'Bilinmiyor',
-    'confirm_delete' => 'Bu ticketı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
+    'confirm_delete' => 'Bu destek talebini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
 ];
