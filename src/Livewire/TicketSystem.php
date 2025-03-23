@@ -25,7 +25,7 @@ class TicketSystem extends Component
     public bool $showResponseModal = false;
     
     // Form alanları
-    public $ticket;
+    public $currentTicket = null;
     public string $title = '';
     public string $description = '';
     public string $selectedPriority = 'medium';
@@ -33,12 +33,6 @@ class TicketSystem extends Component
     
     // Dinlenecek olaylar
     protected $listeners = ['refreshTickets' => '$refresh'];
-    
-    // Component yüklendiğinde ticket özelliğini sıfırla
-    public function mount()
-    {
-        $this->ticket = null;
-    }
     
     protected function rules(): array
     {
@@ -52,15 +46,9 @@ class TicketSystem extends Component
     
     public function render()
     {
-        // Yanıt modalı açık değilse ve düzenleme modalı açık değilse ticket referansını temizle
-        if (!$this->showResponseModal && !$this->showEditModal && $this->getTicket() !== null) {
-            $this->setTicket(null);
-        }
-        
         return view('ticket-system::livewire.ticket-system', [
             'tickets' => $this->getTickets(),
-            'isAdmin' => $this->isAdmin(),
-            'currentTicket' => $this->getTicket(), // Blade'e ticket'ı geçir
+            'isAdmin' => $this->isAdmin()
         ]);
     }
     
@@ -103,8 +91,7 @@ class TicketSystem extends Component
     public function updatedShowResponseModal($value): void
     {
         if (!$value) {
-            $this->setTicket(null);
-            $this->reset(['responseContent']);
+            $this->reset(['currentTicket', 'responseContent']);
         }
     }
     
@@ -114,7 +101,7 @@ class TicketSystem extends Component
     public function updatedShowEditModal($value): void
     {
         if (!$value) {
-            $this->setTicket(null);
+            $this->reset(['currentTicket']);
         }
     }
     
@@ -189,7 +176,7 @@ class TicketSystem extends Component
         }
         
         $this->resetValidation();
-        $this->setTicket($ticket);
+        $this->currentTicket = $ticket;
         $this->title = $ticket->title;
         $this->description = $ticket->description;
         $this->selectedPriority = $ticket->priority;
@@ -208,10 +195,8 @@ class TicketSystem extends Component
     
     public function updateTicket(): void
     {
-        $ticket = $this->getTicket();
-        
         // Admin olmayan kullanıcılar sadece kendi ticketlarını düzenleyebilir
-        if (!$this->isAdmin() && !$this->isOwner($ticket)) {
+        if (!$this->isAdmin() && !$this->isOwner($this->currentTicket)) {
             session()->flash('error', 'Bu ticketı düzenleme yetkiniz yok.');
             return;
         }
@@ -222,7 +207,7 @@ class TicketSystem extends Component
             'selectedPriority' => 'required|in:low,medium,high,urgent',
         ]);
         
-        $ticket->update([
+        $this->currentTicket->update([
             'title' => $this->title,
             'description' => $this->description,
             'priority' => $this->selectedPriority,
@@ -236,22 +221,12 @@ class TicketSystem extends Component
     public function openResponseModal($ticketId): void
     {
         $this->resetValidation();
-        $this->setTicket(null);
-        $this->reset(['responseContent']);
+        $this->reset(['currentTicket', 'responseContent']);
 
         // Ticket ID ile ticketı bulup ilişkileri ile birlikte yükle
         if (is_numeric($ticketId)) {
-            $loadedTicket = Ticket::with(['responses.respondable', 'ticketable'])
+            $this->currentTicket = Ticket::with(['responses.respondable', 'ticketable'])
                                 ->findOrFail($ticketId);
-            
-            // Debug bilgisi
-            \Log::info('Loaded ticket', [
-                'id' => $loadedTicket->id,
-                'title' => $loadedTicket->title,
-                'caller_id' => $ticketId
-            ]);
-            
-            $this->setTicket($loadedTicket);
             $this->showResponseModal = true;
         } else {
             session()->flash('error', 'Geçersiz ticket ID.');
@@ -265,13 +240,11 @@ class TicketSystem extends Component
         ]);
         
         $user = Auth::user();
-        $ticket = $this->getTicket();
-        
-        $user->respondToTicket($ticket, $this->responseContent);
+        $user->respondToTicket($this->currentTicket, $this->responseContent);
         
         // Yanıt verildiğinde otomatik olarak ticket durumunu "in_progress" olarak güncelleme
-        if ($ticket->isOpen()) {
-            $ticket->markAsInProgress();
+        if ($this->currentTicket->isOpen()) {
+            $this->currentTicket->markAsInProgress();
         }
         
         $this->closeResponseModal();
@@ -312,8 +285,7 @@ class TicketSystem extends Component
      */
     public function closeResponseModal(): void
     {
-        $this->setTicket(null);
-        $this->responseContent = '';
+        $this->reset(['currentTicket', 'responseContent']);
         $this->showResponseModal = false;
     }
 
@@ -333,40 +305,5 @@ class TicketSystem extends Component
         $ticket->delete();
 
         session()->flash('message', 'Ticket başarıyla silindi.');
-    }
-
-    /**
-     * Livewire'ın dehydrate yaşam döngüsü metodu
-     * Bileşen durum dosyasına dönüştürülmeden önce çalışır
-     */
-    public function dehydrate()
-    {
-        // Yanıt modalı veya düzenleme modalı açık değilse ticket'ı null yap
-        if (!$this->showResponseModal && !$this->showEditModal) {
-            $this->setTicket(null);
-        }
-    }
-
-    /**
-     * Livewire'ın hydrate yaşam döngüsü metodu
-     * Bileşen durum dosyasından oluşturulduktan sonra çalışır
-     */
-    public function hydrate()
-    {
-        // Ticket'ın doğru bir şekilde hydrate edildiğinden emin olalım
-        if (!$this->showResponseModal && !$this->showEditModal && $this->getTicket() !== null) {
-            $this->setTicket(null);
-        }
-    }
-
-    // Getter ve setter metodları
-    public function getTicket()
-    {
-        return $this->ticket;
-    }
-
-    public function setTicket($ticket)
-    {
-        $this->ticket = $ticket;
     }
 } 
