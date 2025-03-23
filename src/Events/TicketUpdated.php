@@ -13,23 +13,17 @@ class TicketUpdated
 
     /**
      * The ticket instance.
-     *
-     * @var Ticket
      */
     public Ticket $ticket;
 
     /**
      * The original ticket data before the update.
-     *
-     * @var array
      */
     public array $originalData;
 
     /**
      * Create a new event instance.
      *
-     * @param  Ticket  $ticket
-     * @param  array  $originalData
      * @return void
      */
     public function __construct(Ticket $ticket, array $originalData)
@@ -37,4 +31,4 @@ class TicketUpdated
         $this->ticket = $ticket;
         $this->originalData = $originalData;
     }
-} 
+}

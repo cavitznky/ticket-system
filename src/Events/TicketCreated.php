@@ -13,19 +13,16 @@ class TicketCreated
 
     /**
      * The ticket instance.
-     *
-     * @var Ticket
      */
     public Ticket $ticket;
-    
+
     /**
      * Create a new event instance.
      *
-     * @param  Ticket  $ticket
      * @return void
      */
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;
     }
-} 
+}

@@ -13,31 +13,22 @@ class TicketStatusChanged
 
     /**
      * The ticket instance.
-     *
-     * @var Ticket
      */
     public Ticket $ticket;
 
     /**
      * The old status.
-     *
-     * @var string
      */
     public string $oldStatus;
 
     /**
      * The new status.
-     *
-     * @var string
      */
     public string $newStatus;
 
     /**
      * Create a new event instance.
      *
-     * @param  Ticket  $ticket
-     * @param  string  $oldStatus
-     * @param  string  $newStatus
      * @return void
      */
     public function __construct(Ticket $ticket, string $oldStatus, string $newStatus)
@@ -46,4 +37,4 @@ class TicketStatusChanged
         $this->oldStatus = $oldStatus;
         $this->newStatus = $newStatus;
     }
-} 
+}

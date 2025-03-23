@@ -12,23 +12,17 @@ class TicketDeleted
 
     /**
      * The ticket ID.
-     *
-     * @var int
      */
     public int $ticketId;
 
     /**
      * The ticket data before deletion.
-     *
-     * @var array
      */
     public array $ticketData;
 
     /**
      * Create a new event instance.
      *
-     * @param  int  $ticketId
-     * @param  array  $ticketData
      * @return void
      */
     public function __construct(int $ticketId, array $ticketData)
@@ -36,4 +30,4 @@ class TicketDeleted
         $this->ticketId = $ticketId;
         $this->ticketData = $ticketData;
     }
-} 
+}

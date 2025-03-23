@@ -14,23 +14,17 @@ class TicketResponseAdded
 
     /**
      * The ticket instance.
-     *
-     * @var Ticket
      */
     public Ticket $ticket;
 
     /**
      * The ticket response instance.
-     *
-     * @var TicketResponse
      */
     public TicketResponse $response;
 
     /**
      * Create a new event instance.
      *
-     * @param  Ticket  $ticket
-     * @param  TicketResponse  $response
      * @return void
      */
     public function __construct(Ticket $ticket, TicketResponse $response)
@@ -38,4 +32,4 @@ class TicketResponseAdded
         $this->ticket = $ticket;
         $this->response = $response;
     }
-} 
+}

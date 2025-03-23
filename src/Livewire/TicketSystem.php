@@ -167,17 +167,17 @@ class TicketSystem extends Component
             'description' => 'required|min:10',
             'selectedPriority' => 'required|in:low,medium,high,urgent',
         ]);
-        
+
         $user = Auth::user();
         $ticket = $user->createTicket([
             'title' => $this->title,
             'description' => $this->description,
             'priority' => $this->selectedPriority,
         ]);
-        
+
         // Trigger TicketCreated event
         event(new TicketCreated($ticket));
-        
+
         $this->showCreateModal = false;
         $this->reset(['title', 'description', 'selectedPriority']);
         session()->flash('message', __('ticket-system::ticket-system.messages.created'));
@@ -215,29 +215,30 @@ class TicketSystem extends Component
     public function updateTicket(): void
     {
         // Non-admin users can only edit their own tickets
-        if (!$this->isAdmin() && !$this->isOwner($this->currentTicket)) {
+        if (! $this->isAdmin() && ! $this->isOwner($this->currentTicket)) {
             session()->flash('error', __('ticket-system::ticket-system.messages.no_edit_permission'));
+
             return;
         }
-        
+
         $this->validate([
             'title' => 'required|min:3|max:255',
             'description' => 'required|min:10',
             'selectedPriority' => 'required|in:low,medium,high,urgent',
         ]);
-        
+
         // Store original data before update
         $original = $this->currentTicket->getOriginal();
-        
+
         $this->currentTicket->update([
             'title' => $this->title,
             'description' => $this->description,
             'priority' => $this->selectedPriority,
         ]);
-        
+
         // Trigger TicketUpdated event
         event(new TicketUpdated($this->currentTicket, $original));
-        
+
         $this->showEditModal = false;
         session()->flash('message', __('ticket-system::ticket-system.messages.updated'));
     }
@@ -263,22 +264,22 @@ class TicketSystem extends Component
         $this->validate([
             'responseContent' => 'required|min:3',
         ]);
-        
+
         $user = Auth::user();
         $response = $user->respondToTicket($this->currentTicket, $this->responseContent);
-        
+
         // Automatically update ticket status to in_progress if it's open
         if ($this->currentTicket->isOpen()) {
             $oldStatus = $this->currentTicket->status;
             $this->currentTicket->markAsInProgress();
-            
+
             // Trigger TicketStatusChanged event if status was changed
             event(new TicketStatusChanged($this->currentTicket, $oldStatus, 'in_progress'));
         }
-        
+
         // Trigger TicketResponseAdded event
         event(new TicketResponseAdded($this->currentTicket, $response));
-        
+
         $this->closeResponseModal();
         session()->flash('message', __('ticket-system::ticket-system.messages.responded'));
     }
@@ -287,30 +288,31 @@ class TicketSystem extends Component
     public function changeStatus(Ticket $ticket, string $status): void
     {
         // Non-admin users can only change status of their own tickets
-        if (!$this->isAdmin() && !$this->isOwner($ticket)) {
+        if (! $this->isAdmin() && ! $this->isOwner($ticket)) {
             session()->flash('error', __('ticket-system::ticket-system.messages.no_status_permission'));
+
             return;
         }
-        
-        if (!in_array($status, ['open', 'in_progress', 'resolved', 'closed'])) {
+
+        if (! in_array($status, ['open', 'in_progress', 'resolved', 'closed'])) {
             return;
         }
-        
+
         // Store old status before change
         $oldStatus = $ticket->status;
-        
-        $method = match($status) {
+
+        $method = match ($status) {
             'open' => 'reopen',
             'in_progress' => 'markAsInProgress',
             'resolved' => 'markAsResolved',
             'closed' => 'markAsClosed',
         };
-        
+
         $ticket->$method();
-        
+
         // Trigger TicketStatusChanged event
         event(new TicketStatusChanged($ticket, $oldStatus, $status));
-        
+
         session()->flash('message', __('ticket-system::ticket-system.messages.status_changed'));
     }
 
@@ -331,11 +333,12 @@ class TicketSystem extends Component
     /**
      * Ticket deletion process
      */
-    public function deleteTicket(Ticket $ticket): void 
+    public function deleteTicket(Ticket $ticket): void
     {
         // Only admins can delete tickets
-        if (!$this->isAdmin()) {
+        if (! $this->isAdmin()) {
             session()->flash('error', __('ticket-system::ticket-system.messages.no_delete_permission'));
+
             return;
         }
 
@@ -346,7 +349,7 @@ class TicketSystem extends Component
         // Delete the ticket and its responses
         $ticket->responses()->delete();
         $ticket->delete();
-        
+
         // Trigger TicketDeleted event
         event(new TicketDeleted($ticketId, $ticketData));
 
