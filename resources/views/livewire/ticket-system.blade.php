@@ -16,9 +16,9 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="mb-0">
                 @if ($isAdmin)
-                    <small class="badge bg-primary me-2">Admin</small>
+                    <small class="badge bg-primary me-2">{{ __('ticket-system::ticket-system.admin_badge') }}</small>
                 @endif
-                Destek Talepleri
+                {{ __('ticket-system::ticket-system.title') }}
             </h4>
             <button class="btn btn-primary" wire:click="openCreateModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
@@ -26,7 +26,7 @@
                     <line x1="12" y1="8" x2="12" y2="16"></line>
                     <line x1="8" y1="12" x2="16" y2="12"></line>
                 </svg>
-                Yeni Ticket
+                {{ __('ticket-system::ticket-system.new_ticket') }}
             </button>
         </div>
 
@@ -35,7 +35,7 @@
             <div class="row mb-4">
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Arama..." wire:model.live.debounce.500ms="search">
+                        <input type="text" class="form-control" placeholder="{{ __('ticket-system::ticket-system.search') }}" wire:model.live.debounce.500ms="search">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -49,21 +49,21 @@
 
                 <div class="col-md-3">
                     <select class="form-control" wire:model.live="status">
-                        <option value="">Durum: Tümü</option>
-                        <option value="open">Açık</option>
-                        <option value="in_progress">İşlemde</option>
-                        <option value="resolved">Çözüldü</option>
-                        <option value="closed">Kapalı</option>
+                        <option value="">{{ __('ticket-system::ticket-system.status.all') }}</option>
+                        <option value="open">{{ __('ticket-system::ticket-system.status.open') }}</option>
+                        <option value="in_progress">{{ __('ticket-system::ticket-system.status.in_progress') }}</option>
+                        <option value="resolved">{{ __('ticket-system::ticket-system.status.resolved') }}</option>
+                        <option value="closed">{{ __('ticket-system::ticket-system.status.closed') }}</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select class="form-control" wire:model.live="priority">
-                        <option value="">Öncelik: Tümü</option>
-                        <option value="low">Düşük</option>
-                        <option value="medium">Orta</option>
-                        <option value="high">Yüksek</option>
-                        <option value="urgent">Acil</option>
+                        <option value="">{{ __('ticket-system::ticket-system.priority.all') }}</option>
+                        <option value="low">{{ __('ticket-system::ticket-system.priority.low') }}</option>
+                        <option value="medium">{{ __('ticket-system::ticket-system.priority.medium') }}</option>
+                        <option value="high">{{ __('ticket-system::ticket-system.priority.high') }}</option>
+                        <option value="urgent">{{ __('ticket-system::ticket-system.priority.urgent') }}</option>
                     </select>
                 </div>
 
@@ -74,7 +74,7 @@
                             <path d="M17 12H3"></path>
                             <path d="M12 17l-5-5 5-5"></path>
                         </svg>
-                        Sıfırla
+                        {{ __('ticket-system::ticket-system.reset') }}
                     </button>
                 </div>
             </div>
@@ -84,19 +84,19 @@
                 <table class="table table-hover">
                     <thead class="thead-light">
                         <tr>
-                            <th>Başlık</th>
-                            <th>Oluşturan</th>
-                            <th>Durum</th>
-                            <th>Öncelik</th>
-                            <th>Oluşturulma</th>
-                            <th class="text-end text-r">İşlemler</th>
+                            <th>{{ __('ticket-system::ticket-system.columns.title') }}</th>
+                            <th>{{ __('ticket-system::ticket-system.columns.creator') }}</th>
+                            <th>{{ __('ticket-system::ticket-system.columns.status') }}</th>
+                            <th>{{ __('ticket-system::ticket-system.columns.priority') }}</th>
+                            <th>{{ __('ticket-system::ticket-system.columns.created_at') }}</th>
+                            <th class="text-end text-r">{{ __('ticket-system::ticket-system.columns.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($tickets as $ticket)
                             <tr wire:key="ticket-{{ $ticket->id }}">
                                 <td>{{ $ticket->title }}</td>
-                                <td>{{ $ticket->ticketable->name ?? 'Bilinmiyor' }}</td>
+                                <td>{{ $ticket->ticketable->name ?? __('ticket-system::ticket-system.unknown') }}</td>
                                 <td>
                                     <span class="badge 
                                         @if ($ticket->status == 'open') bg-secondary
@@ -104,13 +104,13 @@
                                         @elseif($ticket->status == 'resolved') bg-success
                                         @elseif($ticket->status == 'closed') bg-dark @endif">
                                         @if ($ticket->status == 'open')
-                                            Açık
+                                            {{ __('ticket-system::ticket-system.status.open') }}
                                         @elseif($ticket->status == 'in_progress')
-                                            İşlemde
+                                            {{ __('ticket-system::ticket-system.status.in_progress') }}
                                         @elseif($ticket->status == 'resolved')
-                                            Çözüldü
+                                            {{ __('ticket-system::ticket-system.status.resolved') }}
                                         @elseif($ticket->status == 'closed')
-                                            Kapalı
+                                            {{ __('ticket-system::ticket-system.status.closed') }}
                                         @endif
                                     </span>
                                 </td>
@@ -121,13 +121,13 @@
                                         @elseif($ticket->priority == 'high') bg-warning
                                         @elseif($ticket->priority == 'urgent') bg-danger @endif">
                                         @if ($ticket->priority == 'low')
-                                            Düşük
+                                            {{ __('ticket-system::ticket-system.priority.low') }}
                                         @elseif($ticket->priority == 'medium')
-                                            Orta
+                                            {{ __('ticket-system::ticket-system.priority.medium') }}
                                         @elseif($ticket->priority == 'high')
-                                            Yüksek
+                                            {{ __('ticket-system::ticket-system.priority.high') }}
                                         @elseif($ticket->priority == 'urgent')
-                                            Acil
+                                            {{ __('ticket-system::ticket-system.priority.urgent') }}
                                         @endif
                                     </span>
                                 </td>
@@ -162,7 +162,7 @@
                                                                 <line x1="3" y1="9" x2="21" y2="9"></line>
                                                                 <line x1="9" y1="21" x2="9" y2="9"></line>
                                                             </svg>
-                                                            Tekrar Aç
+                                                            {{ __('ticket-system::ticket-system.actions.reopen') }}
                                                         </a>
                                                     @endif
                                                     @if (!$ticket->isInProgress())
@@ -171,7 +171,7 @@
                                                                 <circle cx="12" cy="12" r="10"></circle>
                                                                 <polyline points="12 6 12 12 16 14"></polyline>
                                                             </svg>
-                                                            İşleme Al
+                                                            {{ __('ticket-system::ticket-system.actions.mark_in_progress') }}
                                                         </a>
                                                     @endif
                                                     @if (!$ticket->isResolved())
@@ -180,7 +180,7 @@
                                                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                             </svg>
-                                                            Çözüldü İşaretle
+                                                            {{ __('ticket-system::ticket-system.actions.mark_resolved') }}
                                                         </a>
                                                     @endif
                                                     @if (!$ticket->isClosed())
@@ -190,7 +190,7 @@
                                                                 <line x1="15" y1="9" x2="9" y2="15"></line>
                                                                 <line x1="9" y1="9" x2="15" y2="15"></line>
                                                             </svg>
-                                                            Kapat
+                                                            {{ __('ticket-system::ticket-system.actions.close') }}
                                                         </a>
                                                     @endif
 
@@ -203,7 +203,7 @@
                                                                 <line x1="10" y1="11" x2="10" y2="17"></line>
                                                                 <line x1="14" y1="11" x2="14" y2="17"></line>
                                                             </svg>
-                                                            Ticket Sil
+                                                            {{ __('ticket-system::ticket-system.actions.delete') }}
                                                         </a>
                                                     @endif
                                                 </div>
@@ -219,7 +219,7 @@
                                         <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                                         <path d="M7 15h0M2 9.5h20"></path>
                                     </svg>
-                                    <p class="lead">Henüz ticket bulunmuyor</p>
+                                    <p class="lead">{{ __('ticket-system::ticket-system.no_tickets') }}</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -245,7 +245,7 @@
                             <line x1="12" y1="8" x2="12" y2="16"></line>
                             <line x1="8" y1="12" x2="16" y2="12"></line>
                         </svg>
-                        Yeni Ticket Oluştur
+                        {{ __('ticket-system::ticket-system.modal.create.title') }}
                     </h5>
                     <button type="button" class="close" aria-label="Close" wire:click="$set('showCreateModal', false)">
                         <span aria-hidden="true">&times;</span>
@@ -259,11 +259,11 @@
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
                                     <polyline points="12 5 19 12 12 19"></polyline>
                                 </svg>
-                                Başlık
+                                {{ __('ticket-system::ticket-system.modal.create.form.title') }}
                             </label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" wire:model="title" placeholder="Ticket başlığını girin...">
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" wire:model="title" placeholder="{{ __('ticket-system::ticket-system.modal.create.form.placeholder.title') }}">
                             @error('title')
-                                <div class="invalid-feedback">{{ $message ?? 'Başlık alanı gereklidir.' }}</div>
+                                <div class="invalid-feedback">{{ __('ticket-system::ticket-system.modal.create.form.validation.title_required') }}</div>
                             @enderror
                         </div>
 
@@ -275,11 +275,11 @@
                                     <line x1="21" y1="14" x2="3" y2="14"></line>
                                     <line x1="21" y1="18" x2="3" y2="18"></line>
                                 </svg>
-                                Açıklama
+                                {{ __('ticket-system::ticket-system.modal.create.form.description') }}
                             </label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="5" wire:model="description" placeholder="Sorununuzu detaylı olarak açıklayın..."></textarea>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="5" wire:model="description" placeholder="{{ __('ticket-system::ticket-system.modal.create.form.placeholder.description') }}"></textarea>
                             @error('description')
-                                <div class="invalid-feedback">{{ $message ?? 'Açıklama alanı gereklidir.' }}</div>
+                                <div class="invalid-feedback">{{ __('ticket-system::ticket-system.modal.create.form.validation.description_required') }}</div>
                             @enderror
                         </div>
 
@@ -288,16 +288,16 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                                     <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                                 </svg>
-                                Öncelik
+                                {{ __('ticket-system::ticket-system.modal.create.form.priority') }}
                             </label>
                             <select class="form-control @error('selectedPriority') is-invalid @enderror" id="priority" wire:model="selectedPriority">
-                                <option value="low">Düşük</option>
-                                <option value="medium">Orta</option>
-                                <option value="high">Yüksek</option>
-                                <option value="urgent">Acil</option>
+                                <option value="low">{{ __('ticket-system::ticket-system.priority.low') }}</option>
+                                <option value="medium">{{ __('ticket-system::ticket-system.priority.medium') }}</option>
+                                <option value="high">{{ __('ticket-system::ticket-system.priority.high') }}</option>
+                                <option value="urgent">{{ __('ticket-system::ticket-system.priority.urgent') }}</option>
                             </select>
                             @error('selectedPriority')
-                                <div class="invalid-feedback">{{ $message ?? 'Öncelik alanı gereklidir.' }}</div>
+                                <div class="invalid-feedback">{{ __('ticket-system::ticket-system.modal.create.form.validation.priority_required') }}</div>
                             @enderror
                         </div>
 
@@ -307,7 +307,7 @@
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
                                     <line x1="6" y1="6" x2="18" y2="18"></line>
                                 </svg>
-                                İptal
+                                {{ __('ticket-system::ticket-system.modal.create.buttons.cancel') }}
                             </button>
                             <button type="submit" class="btn btn-success">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
@@ -315,7 +315,7 @@
                                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
                                     <polyline points="7 3 7 8 15 8"></polyline>
                                 </svg>
-                                Oluştur
+                                {{ __('ticket-system::ticket-system.modal.create.buttons.create') }}
                             </button>
                         </div>
                     </form>
@@ -335,7 +335,7 @@
                             <path d="M12 20h9"></path>
                             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                         </svg>
-                        Ticket Düzenle
+                        {{ __('ticket-system::ticket-system.modal.edit.title') }}
                     </h5>
                     <button type="button" class="btn btn-sm btn-outline-secondary close" aria-label="Close" wire:click="$set('showEditModal', false)">
                         <span aria-hidden="true">&times;</span>
@@ -350,11 +350,11 @@
                                         <line x1="5" y1="12" x2="19" y2="12"></line>
                                         <polyline points="12 5 19 12 12 19"></polyline>
                                     </svg>
-                                    Başlık
+                                    {{ __('ticket-system::ticket-system.modal.create.form.title') }}
                                 </label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror" id="edit-title" wire:model="title">
                                 @error('title')
-                                    <div class="invalid-feedback">{{ $message ?? 'Başlık alanı gereklidir.' }}</div>
+                                    <div class="invalid-feedback">{{ __('ticket-system::ticket-system.modal.create.form.validation.title_required') }}</div>
                                 @enderror
                             </div>
 
@@ -366,11 +366,11 @@
                                         <line x1="21" y1="14" x2="3" y2="14"></line>
                                         <line x1="21" y1="18" x2="3" y2="18"></line>
                                     </svg>
-                                    Açıklama
+                                    {{ __('ticket-system::ticket-system.modal.create.form.description') }}
                                 </label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" id="edit-description" rows="5" wire:model="description"></textarea>
                                 @error('description')
-                                    <div class="invalid-feedback">{{ $message ?? 'Açıklama alanı gereklidir.' }}</div>
+                                    <div class="invalid-feedback">{{ __('ticket-system::ticket-system.modal.create.form.validation.description_required') }}</div>
                                 @enderror
                             </div>
 
@@ -379,16 +379,16 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                                         <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                                     </svg>
-                                    Öncelik
+                                    {{ __('ticket-system::ticket-system.modal.create.form.priority') }}
                                 </label>
                                 <select class="form-control @error('selectedPriority') is-invalid @enderror" id="edit-priority" wire:model="selectedPriority">
-                                    <option value="low">Düşük</option>
-                                    <option value="medium">Orta</option>
-                                    <option value="high">Yüksek</option>
-                                    <option value="urgent">Acil</option>
+                                    <option value="low">{{ __('ticket-system::ticket-system.priority.low') }}</option>
+                                    <option value="medium">{{ __('ticket-system::ticket-system.priority.medium') }}</option>
+                                    <option value="high">{{ __('ticket-system::ticket-system.priority.high') }}</option>
+                                    <option value="urgent">{{ __('ticket-system::ticket-system.priority.urgent') }}</option>
                                 </select>
                                 @error('selectedPriority')
-                                    <div class="invalid-feedback">{{ $message ?? 'Öncelik alanı gereklidir.' }}</div>
+                                    <div class="invalid-feedback">{{ __('ticket-system::ticket-system.modal.create.form.validation.priority_required') }}</div>
                                 @enderror
                             </div>
 
@@ -398,7 +398,7 @@
                                         <line x1="18" y1="6" x2="6" y2="18"></line>
                                         <line x1="6" y1="6" x2="18" y2="18"></line>
                                     </svg>
-                                    İptal
+                                    {{ __('ticket-system::ticket-system.modal.edit.buttons.cancel') }}
                                 </button>
                                 <button type="submit" class="btn btn-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
@@ -406,7 +406,7 @@
                                         <polyline points="17 21 17 13 7 13 7 21"></polyline>
                                         <polyline points="7 3 7 8 15 8"></polyline>
                                     </svg>
-                                    Güncelle
+                                    {{ __('ticket-system::ticket-system.modal.edit.buttons.update') }}
                                 </button>
                             </div>
                         </form>
@@ -426,7 +426,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
                             <path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6m-6-6l6-6"></path>
                         </svg>
-                        Ticket Yanıtla
+                        {{ __('ticket-system::ticket-system.modal.response.title') }}
                     </h5>
                     <button type="button" class="btn btn-sm btn-outline-secondary close" aria-label="Close" wire:click="closeResponseModal">
                         <span aria-hidden="true">&times;</span>
@@ -444,13 +444,13 @@
                                     @elseif($currentTicket->status == 'resolved') bg-success
                                     @elseif($currentTicket->status == 'closed') bg-dark @endif">
                                     @if ($currentTicket->status == 'open')
-                                        Açık
+                                        {{ __('ticket-system::ticket-system.status.open') }}
                                     @elseif($currentTicket->status == 'in_progress')
-                                        İşlemde
+                                        {{ __('ticket-system::ticket-system.status.in_progress') }}
                                     @elseif($currentTicket->status == 'resolved')
-                                        Çözüldü
+                                        {{ __('ticket-system::ticket-system.status.resolved') }}
                                     @elseif($currentTicket->status == 'closed')
-                                        Kapalı
+                                        {{ __('ticket-system::ticket-system.status.closed') }}
                                     @endif
                                 </span>
                             </div>
@@ -458,7 +458,7 @@
                                 <div class="d-flex mb-3">
 
                                     <div>
-                                        <h6 class="mb-1 font-weight-bold">{{ $currentTicket->ticketable->name ?? 'Bilinmiyor' }}</h6>
+                                        <h6 class="mb-1 font-weight-bold">{{ $currentTicket->ticketable->name ?? __('ticket-system::ticket-system.unknown') }}</h6>
                                         <small class="text-muted">{{ $currentTicket->created_at->format('d.m.Y H:i') }}</small>
 
                                         <div class="mt-2 p-3 bg-light rounded">
@@ -472,13 +472,13 @@
                                                 @elseif($currentTicket->priority == 'high') bg-warning
                                                 @elseif($currentTicket->priority == 'urgent') bg-danger @endif">
                                                 @if ($currentTicket->priority == 'low')
-                                                    Düşük Öncelik
+                                                    {{ __('ticket-system::ticket-system.priority.low') }}
                                                 @elseif($currentTicket->priority == 'medium')
-                                                    Orta Öncelik
+                                                    {{ __('ticket-system::ticket-system.priority.medium') }}
                                                 @elseif($currentTicket->priority == 'high')
-                                                    Yüksek Öncelik
+                                                    {{ __('ticket-system::ticket-system.priority.high') }}
                                                 @elseif($currentTicket->priority == 'urgent')
-                                                    Acil Öncelik
+                                                    {{ __('ticket-system::ticket-system.priority.urgent') }}
                                                 @endif
                                             </span>
                                         </div>
@@ -494,7 +494,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                                     </svg>
-                                    Yanıtlar ({{ $currentTicket->responses->count() }})
+                                    {{ __('ticket-system::ticket-system.modal.response.responses_title') }} ({{ $currentTicket->responses->count() }})
                                 </h6>
 
                                 <div class="timeline">
@@ -519,20 +519,20 @@
                         <div>
                             <form wire:submit.prevent="submitResponse">
                                 <div class="form-group mb-3">
-                                    <textarea class="form-control @error('responseContent') is-invalid @enderror" id="responseContent" rows="4" wire:model="responseContent" placeholder="Yanıtınızı buraya yazın..."></textarea>
+                                    <textarea class="form-control @error('responseContent') is-invalid @enderror" id="responseContent" rows="4" wire:model="responseContent" placeholder="{{ __('ticket-system::ticket-system.modal.response.form.placeholder') }}"></textarea>
                                     @error('responseContent')
-                                        <div class="invalid-feedback">{{ $message ?? 'Bu alan gereklidir.' }}</div>
+                                        <div class="invalid-feedback">{{ __('ticket-system::ticket-system.modal.response.form.validation.content_required') }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary me-3" wire:click="closeResponseModal">İptal</button>
+                                    <button type="button" class="btn btn-secondary me-3" wire:click="closeResponseModal">{{ __('ticket-system::ticket-system.modal.response.buttons.cancel') }}</button>
                                     <button type="submit" class="btn btn-primary">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                                             <line x1="22" y1="2" x2="11" y2="13"></line>
                                             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                                         </svg>
-                                        Yanıtla
+                                        {{ __('ticket-system::ticket-system.modal.response.buttons.respond') }}
                                     </button>
                                 </div>
                             </form>

@@ -163,7 +163,7 @@ class TicketSystem extends Component
         
         $this->showCreateModal = false;
         $this->reset(['title', 'description', 'selectedPriority']);
-        session()->flash('message', 'Ticket başarıyla oluşturuldu.');
+        session()->flash('message', __('ticket-system::ticket-system.messages.created'));
     }
     
     // Ticket düzenleme işlemleri
@@ -171,7 +171,7 @@ class TicketSystem extends Component
     {
         // Admin olmayan kullanıcılar sadece kendi ticketlarını düzenleyebilir
         if (!$this->isAdmin() && !$this->isOwner($ticket)) {
-            session()->flash('error', 'Bu ticketı düzenleme yetkiniz yok.');
+            session()->flash('error', __('ticket-system::ticket-system.messages.no_edit_permission'));
             return;
         }
         
@@ -197,7 +197,7 @@ class TicketSystem extends Component
     {
         // Admin olmayan kullanıcılar sadece kendi ticketlarını düzenleyebilir
         if (!$this->isAdmin() && !$this->isOwner($this->currentTicket)) {
-            session()->flash('error', 'Bu ticketı düzenleme yetkiniz yok.');
+            session()->flash('error', __('ticket-system::ticket-system.messages.no_edit_permission'));
             return;
         }
         
@@ -214,7 +214,7 @@ class TicketSystem extends Component
         ]);
         
         $this->showEditModal = false;
-        session()->flash('message', 'Ticket başarıyla güncellendi.');
+        session()->flash('message', __('ticket-system::ticket-system.messages.updated'));
     }
     
     // Ticket yanıtlama işlemleri
@@ -229,7 +229,7 @@ class TicketSystem extends Component
                                 ->findOrFail($ticketId);
             $this->showResponseModal = true;
         } else {
-            session()->flash('error', 'Geçersiz ticket ID.');
+            session()->flash('error', __('ticket-system::ticket-system.messages.invalid_ticket'));
         }
     }
     
@@ -248,7 +248,7 @@ class TicketSystem extends Component
         }
         
         $this->closeResponseModal();
-        session()->flash('message', 'Yanıtınız başarıyla kaydedildi.');
+        session()->flash('message', __('ticket-system::ticket-system.messages.responded'));
     }
     
     // Ticket durumu değiştirme
@@ -256,7 +256,7 @@ class TicketSystem extends Component
     {
         // Admin olmayan kullanıcılar sadece kendi ticketlarının durumunu değiştirebilir
         if (!$this->isAdmin() && !$this->isOwner($ticket)) {
-            session()->flash('error', 'Bu ticketın durumunu değiştirme yetkiniz yok.');
+            session()->flash('error', __('ticket-system::ticket-system.messages.no_status_permission'));
             return;
         }
         
@@ -272,7 +272,7 @@ class TicketSystem extends Component
         };
         
         $ticket->$method();
-        session()->flash('message', 'Ticket durumu güncellendi.');
+        session()->flash('message', __('ticket-system::ticket-system.messages.status_changed'));
     }
     
     public function resetFilters(): void
@@ -296,7 +296,7 @@ class TicketSystem extends Component
     {
         // Silme yetkisi yoksa işlemi reddet
         if (!$this->isAdmin()) {
-            session()->flash('error', 'Bu ticketı silme yetkiniz yok.');
+            session()->flash('error', __('ticket-system::ticket-system.messages.no_delete_permission'));
             return;
         }
 
@@ -304,6 +304,6 @@ class TicketSystem extends Component
         $ticket->responses()->delete();
         $ticket->delete();
 
-        session()->flash('message', 'Ticket başarıyla silindi.');
+        session()->flash('message', __('ticket-system::ticket-system.messages.deleted'));
     }
 } 
