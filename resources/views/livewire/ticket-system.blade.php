@@ -6,9 +6,20 @@
         </div>
     @endif
 
+    @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Destek Talepleri</h4>
+            <h4 class="mb-0">
+                @if ($isAdmin)
+                    <small class="badge bg-primary me-2">Admin</small>
+                @endif
+                Destek Talepleri
+            </h4>
             <button class="btn btn-primary" wire:click="openCreateModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -24,7 +35,7 @@
             <div class="row mb-4">
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Arama..." wire:model.debounce.300ms="search">
+                        <input type="text" class="form-control" placeholder="Arama..." wire:model.live.debounce.500ms="search">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -37,7 +48,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <select class="form-control" wire:model="status">
+                    <select class="form-control" wire:model.live="status">
                         <option value="">Durum: Tümü</option>
                         <option value="open">Açık</option>
                         <option value="in_progress">İşlemde</option>
@@ -47,7 +58,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <select class="form-control" wire:model="priority">
+                    <select class="form-control" wire:model.live="priority">
                         <option value="">Öncelik: Tümü</option>
                         <option value="low">Düşük</option>
                         <option value="medium">Orta</option>
@@ -83,7 +94,7 @@
                     </thead>
                     <tbody>
                         @forelse($tickets as $ticket)
-                            <tr>
+                            <tr wire:key="ticket-{{ $ticket->id }}">
                                 <td>{{ $ticket->title }}</td>
                                 <td>{{ $ticket->ticketable->name ?? 'Bilinmiyor' }}</td>
                                 <td>
@@ -123,66 +134,81 @@
                                 <td>{{ $ticket->created_at->format('d.m.Y H:i') }}</td>
                                 <td class="text-end text-right">
                                     <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" wire:click="openResponseModal({{ $ticket->id }})">
+                                        <button class="btn btn-outline-primary" wire:click="openResponseModal({{ $ticket->id }})" wire:key="response-btn-{{ $ticket->id }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6m-6-6l6-6"></path>
                                             </svg>
                                         </button>
-                                        <button class="btn btn-outline-secondary" wire:click="openEditModal({{ $ticket->id }})">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M12 20h9"></path>
-                                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                                            </svg>
-                                        </button>
-                                        <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">
+                                        @if ($isAdmin || $ticket->ticketable_id == auth()->id())
+                                            <button class="btn btn-outline-secondary" wire:click="openEditModal({{ $ticket->id }})">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <circle cx="12" cy="12" r="1"></circle>
-                                                    <circle cx="12" cy="5" r="1"></circle>
-                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                    <path d="M12 20h9"></path>
+                                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                                                 </svg>
                                             </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                @if (!$ticket->isOpen())
-                                                    <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'open')">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary mr-1">
-                                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                                            <line x1="3" y1="9" x2="21" y2="9"></line>
-                                                            <line x1="9" y1="21" x2="9" y2="9"></line>
-                                                        </svg>
-                                                        Tekrar Aç
-                                                    </a>
-                                                @endif
-                                                @if (!$ticket->isInProgress())
-                                                    <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'in_progress')">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary mr-1">
-                                                            <circle cx="12" cy="12" r="10"></circle>
-                                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                                        </svg>
-                                                        İşleme Al
-                                                    </a>
-                                                @endif
-                                                @if (!$ticket->isResolved())
-                                                    <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'resolved')">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success mr-1">
-                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                                        </svg>
-                                                        Çözüldü İşaretle
-                                                    </a>
-                                                @endif
-                                                @if (!$ticket->isClosed())
-                                                    <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'closed')">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-dark mr-1">
-                                                            <circle cx="12" cy="12" r="10"></circle>
-                                                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                                                            <line x1="9" y1="9" x2="15" y2="15"></line>
-                                                        </svg>
-                                                        Kapat
-                                                    </a>
-                                                @endif
+                                            <div class="btn-group btn-group-sm">
+                                                <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1"></circle>
+                                                        <circle cx="12" cy="5" r="1"></circle>
+                                                        <circle cx="12" cy="19" r="1"></circle>
+                                                    </svg>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    @if (!$ticket->isOpen())
+                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'open')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary mr-1">
+                                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                                                <line x1="9" y1="21" x2="9" y2="9"></line>
+                                                            </svg>
+                                                            Tekrar Aç
+                                                        </a>
+                                                    @endif
+                                                    @if (!$ticket->isInProgress())
+                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'in_progress')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary mr-1">
+                                                                <circle cx="12" cy="12" r="10"></circle>
+                                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                                            </svg>
+                                                            İşleme Al
+                                                        </a>
+                                                    @endif
+                                                    @if (!$ticket->isResolved())
+                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'resolved')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success mr-1">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                            Çözüldü İşaretle
+                                                        </a>
+                                                    @endif
+                                                    @if (!$ticket->isClosed())
+                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'closed')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-dark mr-1">
+                                                                <circle cx="12" cy="12" r="10"></circle>
+                                                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                            </svg>
+                                                            Kapat
+                                                        </a>
+                                                    @endif
+
+                                                    @if ($isAdmin)
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item text-danger" href="#" wire:click.prevent="deleteTicket({{ $ticket->id }})" onclick="return confirm('Bu ticketı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-danger mr-1">
+                                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                            </svg>
+                                                            Ticket Sil
+                                                        </a>
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -316,7 +342,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    @if ($ticket)
+                    @if ($currentTicket)
                         <form wire:submit.prevent="updateTicket">
                             <div class="form-group mb-3">
                                 <label class="text-muted mb-1" for="edit-title">
@@ -402,28 +428,28 @@
                         </svg>
                         Ticket Yanıtla
                     </h5>
-                    <button type="button" class="btn btn-sm btn-outline-secondary close" aria-label="Close" wire:click="$set('showResponseModal', false)">
+                    <button type="button" class="btn btn-sm btn-outline-secondary close" aria-label="Close" wire:click="closeResponseModal">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    @if ($ticket)
+                    @if ($currentTicket)
                         {{-- Ticket başlığı ve detayları --}}
                         <div class="card border-left border-primary mb-4" style="border-left-width: 4px !important;">
                             <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
-                                <h5 class="mb-0 font-weight-bold text-primary">{{ $ticket->title }}</h5>
+                                <h5 class="mb-0 font-weight-bold text-primary">{{ $currentTicket->title }}</h5>
                                 <span class="badge 
-                                    @if ($ticket->status == 'open') bg-secondary
-                                    @elseif($ticket->status == 'in_progress') bg-primary
-                                    @elseif($ticket->status == 'resolved') bg-success
-                                    @elseif($ticket->status == 'closed') bg-dark @endif">
-                                    @if ($ticket->status == 'open')
+                                    @if ($currentTicket->status == 'open') bg-secondary
+                                    @elseif($currentTicket->status == 'in_progress') bg-primary
+                                    @elseif($currentTicket->status == 'resolved') bg-success
+                                    @elseif($currentTicket->status == 'closed') bg-dark @endif">
+                                    @if ($currentTicket->status == 'open')
                                         Açık
-                                    @elseif($ticket->status == 'in_progress')
+                                    @elseif($currentTicket->status == 'in_progress')
                                         İşlemde
-                                    @elseif($ticket->status == 'resolved')
+                                    @elseif($currentTicket->status == 'resolved')
                                         Çözüldü
-                                    @elseif($ticket->status == 'closed')
+                                    @elseif($currentTicket->status == 'closed')
                                         Kapalı
                                     @endif
                                 </span>
@@ -432,26 +458,26 @@
                                 <div class="d-flex mb-3">
 
                                     <div>
-                                        <h6 class="mb-1 font-weight-bold">{{ $ticket->ticketable->name ?? 'Bilinmiyor' }}</h6>
-                                        <small class="text-muted">{{ $ticket->created_at->format('d.m.Y H:i') }}</small>
+                                        <h6 class="mb-1 font-weight-bold">{{ $currentTicket->ticketable->name ?? 'Bilinmiyor' }}</h6>
+                                        <small class="text-muted">{{ $currentTicket->created_at->format('d.m.Y H:i') }}</small>
 
                                         <div class="mt-2 p-3 bg-light rounded">
-                                            {{ $ticket->description }}
+                                            {{ $currentTicket->description }}
                                         </div>
 
                                         <div class="mt-2">
                                             <span class="badge 
-                                                @if ($ticket->priority == 'low') bg-info
-                                                @elseif($ticket->priority == 'medium') bg-secondary
-                                                @elseif($ticket->priority == 'high') bg-warning
-                                                @elseif($ticket->priority == 'urgent') bg-danger @endif">
-                                                @if ($ticket->priority == 'low')
+                                                @if ($currentTicket->priority == 'low') bg-info
+                                                @elseif($currentTicket->priority == 'medium') bg-secondary
+                                                @elseif($currentTicket->priority == 'high') bg-warning
+                                                @elseif($currentTicket->priority == 'urgent') bg-danger @endif">
+                                                @if ($currentTicket->priority == 'low')
                                                     Düşük Öncelik
-                                                @elseif($ticket->priority == 'medium')
+                                                @elseif($currentTicket->priority == 'medium')
                                                     Orta Öncelik
-                                                @elseif($ticket->priority == 'high')
+                                                @elseif($currentTicket->priority == 'high')
                                                     Yüksek Öncelik
-                                                @elseif($ticket->priority == 'urgent')
+                                                @elseif($currentTicket->priority == 'urgent')
                                                     Acil Öncelik
                                                 @endif
                                             </span>
@@ -462,17 +488,17 @@
                         </div>
 
                         {{-- Önceki yanıtlar --}}
-                        @if ($ticket->responses->count() > 0)
+                        @if ($currentTicket->responses->count() > 0)
                             <div class="mb-4">
                                 <h6 class="mb-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                                     </svg>
-                                    Yanıtlar ({{ $ticket->responses->count() }})
+                                    Yanıtlar ({{ $currentTicket->responses->count() }})
                                 </h6>
 
                                 <div class="timeline">
-                                    @foreach ($ticket->responses as $response)
+                                    @foreach ($currentTicket->responses as $response)
                                         <div class="d-flex mb-3">
                                             <div class="flex-grow-1">
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -500,7 +526,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary me-3" wire:click="$set('showResponseModal', false)">İptal</button>
+                                    <button type="button" class="btn btn-secondary me-3" wire:click="closeResponseModal">İptal</button>
                                     <button type="submit" class="btn btn-primary">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                                             <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -516,5 +542,5 @@
             </div>
         </div>
     </div>
-    <div class="modal-backdrop fade @if ($showResponseModal) show @endif" wire:click="$set('showResponseModal', false)" @if (!$showResponseModal) style="display: none" @endif></div>
+    <div class="modal-backdrop fade @if ($showResponseModal) show @endif" wire:click="closeResponseModal" @if (!$showResponseModal) style="display: none" @endif></div>
 </div>

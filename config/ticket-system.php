@@ -32,4 +32,18 @@ return [
         'high' => 'Yüksek',
         'urgent' => 'Acil',
     ],
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Yetkilendirme
+    |--------------------------------------------------------------------------
+    |
+    | Admin yetkisini belirleyen ayar. null ise admin yetkisi devre dışı olur.
+    | Bir metod adı verilirse, kullanıcı modelinde o metod çağrılarak
+    | admin yetkisi kontrol edilir.
+    |
+    */
+    
+    // Admin kontrolü için metod adı (null ise devre dışı)
+    'admin' => 'isAdmin',
 ];

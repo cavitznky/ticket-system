@@ -42,4 +42,26 @@ trait HasTickets
             'content' => $content,
         ]);
     }
+    
+    /**
+     * Kullanıcının admin olup olmadığını kontrol eder
+     * 
+     * Config'de belirlenen admin metodu çağrılır veya null ise false döner
+     */
+    public function isTicketAdmin(): bool
+    {
+        $adminMethod = config('ticket-system.admin');
+        
+        // Admin metodu tanımlanmamışsa false döner
+        if ($adminMethod === null) {
+            return false;
+        }
+        
+        // Metod varsa çağrılır
+        if (method_exists($this, $adminMethod)) {
+            return $this->{$adminMethod}();
+        }
+        
+        return false;
+    }
 } 
