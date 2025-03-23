@@ -29,5 +29,10 @@ class TicketSystemServiceProvider extends PackageServiceProvider
     {
         // Livewire komponentini kaydet
         Livewire::component('ticket-system', TicketSystem::class);
+
+        // Migration dosyalarını publish edilebilir hale getir
+        $this->publishes([
+            __DIR__ . '/../database/migrations/create_ticket_system_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_ticket_system_table.php'),
+        ], 'ticket-system-migrations');
     }
 }

@@ -14,6 +14,7 @@ Laravel uygulamaları için basit, kullanımı kolay bir ticket sistemi paketi. 
 - Ticket durumu ve önceliği için filtreleme ve arama özelliği
 - Yanıtlama ve durum güncelleme işlemleri
 - Bootstrap 4 ile tasarlanmış kullanıcı dostu arayüz
+- Harici kütüphane gerektirmeden SVG ikonlar
 
 ## Kurulum
 
@@ -23,13 +24,36 @@ Paketi composer aracılığıyla kurun:
 composer require cavitznky/ticket-system
 ```
 
-İsteğe bağlı olarak, config dosyasını yayınlayabilirsiniz:
+Kurulum komutunu çalıştırın:
 
 ```bash
-php artisan vendor:publish --tag="ticket-system-config"
+php artisan ticket-system:install
 ```
 
-Migrasyon dosyalarını çalıştırın:
+Bu komut config dosyasını yayınlar. Migrasyon dosyalarını yayınlamak ve çalıştırmak için şu seçenekleri kullanabilirsiniz:
+
+```bash
+# Migrasyon dosyalarını yayınlamak için:
+php artisan ticket-system:install --publish-migrations
+
+# Doğrudan migrasyon çalıştırmak için:
+php artisan ticket-system:install --migrate
+```
+
+Alternatif olarak, bileşenleri manuel olarak yayınlayabilirsiniz:
+
+```bash
+# Config dosyasını yayınlamak için:
+php artisan vendor:publish --tag="ticket-system-config"
+
+# Migrasyon dosyalarını yayınlamak için:
+php artisan vendor:publish --tag="ticket-system-migrations"
+
+# View dosyalarını yayınlamak için:
+php artisan vendor:publish --tag="ticket-system-views"
+```
+
+Migrasyonları çalıştırın:
 
 ```bash
 php artisan migrate
@@ -91,6 +115,31 @@ Tasarımı özelleştirmek için görünüm dosyalarını yayınlayabilirsiniz:
 
 ```bash
 php artisan vendor:publish --tag="ticket-system-views"
+```
+
+## Yerel Geliştirme
+
+Paketi yerel bir projede test etmek için:
+
+1. Yeni bir Laravel projesi oluşturun:
+```bash
+composer create-project laravel/laravel test-ticket-system
+cd test-ticket-system
+```
+
+2. Composer.json dosyasına yerel repository ekleyin:
+```bash
+composer config repositories.ticket-system path "../ticket-system"
+```
+
+3. Paketi require edin:
+```bash
+composer require cavitznky/ticket-system:dev-main
+```
+
+4. Kurulumu tamamlayın:
+```bash
+php artisan ticket-system:install --migrate
 ```
 
 ## Test

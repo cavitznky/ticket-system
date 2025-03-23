@@ -56,6 +56,7 @@ class TicketSystem extends Component
     protected function getTickets(): LengthAwarePaginator
     {
         $query = Ticket::query()
+            ->with('ticketable')
             ->when($this->search, function ($q) {
                 return $q->where('title', 'like', '%' . $this->search . '%')
                     ->orWhere('description', 'like', '%' . $this->search . '%');
@@ -132,7 +133,8 @@ class TicketSystem extends Component
     public function openResponseModal(Ticket $ticket): void
     {
         $this->resetValidation();
-        $this->ticket = $ticket;
+        // Ticket ve yanıtları ile ticketable ve respondable ilişkilerini eager loading ile yükle
+        $this->ticket = Ticket::with(['responses.respondable', 'ticketable'])->findOrFail($ticket->id);
         $this->responseContent = '';
         $this->showResponseModal = true;
     }
