@@ -97,4 +97,5 @@ return [
         'invalid_ticket' => 'Ongeldige ticket ID.',
     ],
     'unknown' => 'Onbekend',
+    'confirm_delete' => 'Weet u zeker dat u dit ticket wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
 ]; 

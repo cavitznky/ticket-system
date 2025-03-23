@@ -97,4 +97,5 @@ return [
         'invalid_ticket' => 'Geçersiz ticket ID.',
     ],
     'unknown' => 'Bilinmiyor',
+    'confirm_delete' => 'Bu ticketı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
 ]; 

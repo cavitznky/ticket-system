@@ -28,45 +28,45 @@ class TicketSystemServiceProvider extends PackageServiceProvider
     
     public function bootingPackage()
     {
-        // Livewire komponentini kaydet
+        // Save the Livewire component
         Livewire::component('ticket-system', TicketSystem::class);
 
-        // Migration dosyalarını publish edilebilir hale getir
+        // Publish the migration files
         $this->publishes([
             __DIR__ . '/../database/migrations/create_ticket_system_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_ticket_system_table.php'),
         ], 'ticket-system-migrations');
         
-        // Çeviri dosyalarını publish edilebilir hale getir
+        // Publish the translation files
         $this->publishes([
             __DIR__ . '/../resources/lang' => resource_path('lang/vendor/ticket-system'),
         ], 'ticket-system-translations');
         
-        // Views'ları publish edilebilir hale getir
+        // Publish the views
         $this->publishes([
             __DIR__ . '/../resources/views' => resource_path('views/vendor/ticket-system'),
         ], 'ticket-system-views');
         
-        // Config dosyasını publish edilebilir hale getir
+        // Publish the config file
         $this->publishes([
             __DIR__ . '/../config/ticket-system.php' => config_path('ticket-system.php'),
         ], 'ticket-system-config');
         
-        // Livewire bileşenlerini publish edilebilir hale getir
+        // Publish the Livewire components
         $this->publishes([
             __DIR__ . '/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
         ], 'ticket-system-components');
         
-        // Modelleri publish edilebilir hale getir
+        // Publish the models
         $this->publishes([
             __DIR__ . '/Models' => app_path('Models/TicketSystem'),
         ], 'ticket-system-models');
         
-        // Traits'leri publish edilebilir hale getir
+        // Publish the traits
         $this->publishes([
             __DIR__ . '/Traits' => app_path('Traits/TicketSystem'),
         ], 'ticket-system-traits');
         
-        // Tüm bileşenleri bir arada publish edebilmek için
+        // Publish all components together
         $this->publishes([
             __DIR__ . '/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
             __DIR__ . '/Models' => app_path('Models/TicketSystem'),

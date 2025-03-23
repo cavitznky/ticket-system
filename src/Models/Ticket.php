@@ -22,13 +22,13 @@ class Ticket extends Model
         'priority' => 'string',
     ];
 
-    // Ticket'ı oluşturan kullanıcıya polimorfik bağlantı
+    // The user who created the ticket has a polymorphic connection
     public function ticketable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    // Ticket cevapları
+    // Ticket responses
     public function responses(): HasMany
     {
         return $this->hasMany(TicketResponse::class);

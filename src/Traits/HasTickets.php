@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasTickets
 {
     /**
-     * Bu model tarafından oluşturulan ticket'lar
+     * This model's tickets
      */
     public function tickets(): MorphMany
     {
@@ -17,7 +17,7 @@ trait HasTickets
     }
 
     /**
-     * Bu model tarafından oluşturulan ticket yanıtları
+     * This model's ticket responses
      */
     public function ticketResponses(): MorphMany
     {
@@ -25,7 +25,7 @@ trait HasTickets
     }
 
     /**
-     * Yeni bir ticket oluştur
+     * Create a new ticket
      */
     public function createTicket(array $attributes): Ticket
     {
@@ -33,7 +33,7 @@ trait HasTickets
     }
 
     /**
-     * Bir ticket'a yanıt ver
+     * Respond to a ticket
      */
     public function respondToTicket(Ticket $ticket, string $content): TicketResponse
     {
@@ -44,20 +44,20 @@ trait HasTickets
     }
     
     /**
-     * Kullanıcının admin olup olmadığını kontrol eder
+     * Checks if the user is an admin
      * 
-     * Config'de belirlenen admin metodu çağrılır veya null ise false döner
+     * The admin method specified in the config is called, or false if it is not defined
      */
-    public function isTicketAdmin(): bool
+    public function getTicketAdmin(): bool
     {
         $adminMethod = config('ticket-system.admin');
         
-        // Admin metodu tanımlanmamışsa false döner
+        // If the admin method is not defined, return false
         if ($adminMethod === null) {
             return false;
         }
         
-        // Metod varsa çağrılır
+        // If the method exists, call it
         if (method_exists($this, $adminMethod)) {
             return $this->{$adminMethod}();
         }

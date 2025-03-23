@@ -8,38 +8,38 @@ class TicketSystemCommand extends Command
 {
     public $signature = 'ticket-system:install {--migrate : Doğrudan migrasyon çalıştır} {--M|publish-migrations : Migrasyon dosyalarını yayınlar}';
 
-    public $description = 'Laravel Ticket Sistemi kurulumunu tamamlar';
+    public $description = 'Completes Laravel Ticket System setup';
 
     public function handle(): int
     {
-        $this->comment('Ticket Sistemi kurulumu başlatılıyor...');
+        $this->comment('Ticket System installation started...');
 
-        // Migrasyon dosyalarını yayınlama
+        // Publish migrations
         if ($this->option('publish-migrations')) {
-            $this->comment('Migrasyon dosyaları yayınlanıyor...');
+            $this->comment('Migrations are being published...');
             $this->call('vendor:publish', [
                 '--tag' => 'ticket-system-migrations',
                 '--force' => true,
             ]);
-            $this->info('Migrasyon dosyaları başarıyla yayınlandı!');
+            $this->info('Migrations published successfully!');
         }
 
-        // Migrasyon çalıştırma
+        // Run migrations
         if ($this->option('migrate')) {
-            $this->comment('Migrasyon dosyaları çalıştırılıyor...');
+            $this->comment('Migrations are being run...');
             $this->call('migrate');
-            $this->info('Migrasyonlar başarıyla çalıştırıldı!');
+            $this->info('Migrations run successfully!');
         }
 
-        // Config dosyalarını yayınlama
-        $this->comment('Konfigürasyon dosyaları yayınlanıyor...');
+        // Publish config files
+        $this->comment('Config files are being published...');
         $this->call('vendor:publish', [
             '--tag' => 'ticket-system-config',
             '--force' => true,
         ]);
 
-        $this->info('Ticket Sistemi başarıyla kuruldu!');
-        $this->info('Aşağıdaki komutları kullanarak paket bileşenlerini özelleştirebilirsiniz:');
+        $this->info('Ticket System installed successfully!');
+        $this->info('You can customize the package components using the following commands:');
         $this->comment('php artisan vendor:publish --tag="ticket-system-views"');
         $this->comment('php artisan vendor:publish --tag="ticket-system-migrations"');
 

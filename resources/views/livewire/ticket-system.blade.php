@@ -1,5 +1,4 @@
 <div>
-    {{-- Mesaj bildirimleri --}}
     @if (session()->has('message'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('message') }}
@@ -31,19 +30,11 @@
         </div>
 
         <div class="card-body">
-            {{-- Arama ve filtreleme --}}
+            {{-- Search and filtering --}}
             <div class="row mb-4">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="{{ __('ticket-system::ticket-system.search') }}" wire:model.live.debounce.500ms="search">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                            </button>
-                        </div>
                     </div>
                 </div>
 
@@ -67,8 +58,8 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
-                    <button class="btn btn-outline-secondary btn-block" wire:click="resetFilters">
+                <div class="col-md-3">
+                    <button class="btn btn-outline-secondary btn-block w-100" wire:click="resetFilters">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                             <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"></path>
                             <path d="M17 12H3"></path>
@@ -79,7 +70,7 @@
                 </div>
             </div>
 
-            {{-- Ticket tablosu --}}
+            {{-- Ticket table --}}
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead class="thead-light">
@@ -139,7 +130,7 @@
                                                 <path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6m-6-6l6-6"></path>
                                             </svg>
                                         </button>
-                                        @if ($isAdmin || $ticket->ticketable_id == auth()->id())
+                                        @if ($isAdmin)
                                             <button class="btn btn-outline-secondary" wire:click="openEditModal({{ $ticket->id }})">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M12 20h9"></path>
@@ -147,66 +138,78 @@
                                                 </svg>
                                             </button>
                                             <div class="btn-group btn-group-sm">
-                                                <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">
+                                                <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <circle cx="12" cy="12" r="1"></circle>
                                                         <circle cx="12" cy="5" r="1"></circle>
                                                         <circle cx="12" cy="19" r="1"></circle>
                                                     </svg>
                                                 </button>
-                                                <div class="dropdown-menu dropdown-menu-right">
+                                                <ul class="dropdown-menu dropdown-menu-end">
                                                     @if (!$ticket->isOpen())
-                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'open')">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary mr-1">
-                                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                                                <line x1="3" y1="9" x2="21" y2="9"></line>
-                                                                <line x1="9" y1="21" x2="9" y2="9"></line>
-                                                            </svg>
-                                                            {{ __('ticket-system::ticket-system.actions.reopen') }}
-                                                        </a>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'open')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary me-1">
+                                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                                                                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                                                                </svg>
+                                                                {{ __('ticket-system::ticket-system.actions.reopen') }}
+                                                            </a>
+                                                        </li>
                                                     @endif
                                                     @if (!$ticket->isInProgress())
-                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'in_progress')">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary mr-1">
-                                                                <circle cx="12" cy="12" r="10"></circle>
-                                                                <polyline points="12 6 12 12 16 14"></polyline>
-                                                            </svg>
-                                                            {{ __('ticket-system::ticket-system.actions.mark_in_progress') }}
-                                                        </a>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'in_progress')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary me-1">
+                                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                                                </svg>
+                                                                {{ __('ticket-system::ticket-system.actions.mark_in_progress') }}
+                                                            </a>
+                                                        </li>
                                                     @endif
                                                     @if (!$ticket->isResolved())
-                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'resolved')">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success mr-1">
-                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                                            </svg>
-                                                            {{ __('ticket-system::ticket-system.actions.mark_resolved') }}
-                                                        </a>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'resolved')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success me-1">
+                                                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                                </svg>
+                                                                {{ __('ticket-system::ticket-system.actions.mark_resolved') }}
+                                                            </a>
+                                                        </li>
                                                     @endif
                                                     @if (!$ticket->isClosed())
-                                                        <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'closed')">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-dark mr-1">
-                                                                <circle cx="12" cy="12" r="10"></circle>
-                                                                <line x1="15" y1="9" x2="9" y2="15"></line>
-                                                                <line x1="9" y1="9" x2="15" y2="15"></line>
-                                                            </svg>
-                                                            {{ __('ticket-system::ticket-system.actions.close') }}
-                                                        </a>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $ticket->id }}, 'closed')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-dark me-1">
+                                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                                </svg>
+                                                                {{ __('ticket-system::ticket-system.actions.close') }}
+                                                            </a>
+                                                        </li>
                                                     @endif
 
                                                     @if ($isAdmin)
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item text-danger" href="#" wire:click.prevent="deleteTicket({{ $ticket->id }})" onclick="return confirm('Bu ticketı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-danger mr-1">
-                                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                            </svg>
-                                                            {{ __('ticket-system::ticket-system.actions.delete') }}
-                                                        </a>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#" wire:click.prevent="deleteTicket({{ $ticket->id }})" onclick="return confirm('{{ __('ticket-system::ticket-system.confirm_delete') }}')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-danger me-1">
+                                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                                </svg>
+                                                                {{ __('ticket-system::ticket-system.actions.delete') }}
+                                                            </a>
+                                                        </li>
                                                     @endif
-                                                </div>
+                                                </ul>
                                             </div>
                                         @endif
                                     </div>
@@ -234,7 +237,7 @@
         </div>
     </div>
 
-    {{-- Ticket Oluşturma Modal --}}
+    {{-- Ticket Creation Modal --}}
     <div class="modal @if ($showCreateModal) show d-block @endif" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -247,8 +250,8 @@
                         </svg>
                         {{ __('ticket-system::ticket-system.modal.create.title') }}
                     </h5>
-                    <button type="button" class="close" aria-label="Close" wire:click="$set('showCreateModal', false)">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" aria-label="Close" wire:click="$set('showCreateModal', false)">
+                        <span class="sr-only">Close</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -325,7 +328,7 @@
     </div>
     <div class="modal-backdrop fade @if ($showCreateModal) show @endif" wire:click="$set('showCreateModal', false)" @if (!$showCreateModal) style="display: none" @endif></div>
 
-    {{-- Ticket Düzenleme Modal --}}
+    {{-- Ticket Edit Modal --}}
     <div class="modal @if ($showEditModal) show d-block @endif" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -337,8 +340,8 @@
                         </svg>
                         {{ __('ticket-system::ticket-system.modal.edit.title') }}
                     </h5>
-                    <button type="button" class="btn btn-sm btn-outline-secondary close" aria-label="Close" wire:click="$set('showEditModal', false)">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" aria-label="Close" wire:click="$set('showEditModal', false)">
+                        <span class="sr-only">Close</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -417,7 +420,7 @@
     </div>
     <div class="modal-backdrop fade @if ($showEditModal) show @endif" wire:click="$set('showEditModal', false)" @if (!$showEditModal) style="display: none" @endif></div>
 
-    {{-- Ticket Yanıtlama Modal --}}
+    {{-- Ticket Response Modal --}}
     <div class="modal @if ($showResponseModal) show d-block @endif" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -428,13 +431,13 @@
                         </svg>
                         {{ __('ticket-system::ticket-system.modal.response.title') }}
                     </h5>
-                    <button type="button" class="btn btn-sm btn-outline-secondary close" aria-label="Close" wire:click="closeResponseModal">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" aria-label="Close" wire:click="closeResponseModal">
+                        <span class="sr-only">Close</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     @if ($currentTicket)
-                        {{-- Ticket başlığı ve detayları --}}
+                        {{-- Ticket title and details --}}
                         <div class="card border-left border-primary mb-4" style="border-left-width: 4px !important;">
                             <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
                                 <h5 class="mb-0 font-weight-bold text-primary">{{ $currentTicket->title }}</h5>
@@ -487,7 +490,7 @@
                             </div>
                         </div>
 
-                        {{-- Önceki yanıtlar --}}
+                        {{-- Previous responses --}}
                         @if ($currentTicket->responses->count() > 0)
                             <div class="mb-4">
                                 <h6 class="mb-3">
@@ -515,7 +518,7 @@
                             </div>
                         @endif
 
-                        {{-- Yanıt formu --}}
+                        {{-- Response form --}}
                         <div>
                             <form wire:submit.prevent="submitResponse">
                                 <div class="form-group mb-3">

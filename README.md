@@ -90,10 +90,10 @@ class User extends Authenticatable
 }
 ```
 
-To define admin users who can manage all tickets, add the `isTicketAdmin` method to your User model:
+To define admin users who can manage all tickets, add the `getTicketAdmin` method to your User model:
 
 ```php
-public function isTicketAdmin(): bool
+public function getTicketAdmin(): bool
 {
     // Define your logic to determine if a user is an admin
     return $this->isAdmin(); // or any other logic

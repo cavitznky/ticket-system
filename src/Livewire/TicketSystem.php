@@ -14,24 +14,24 @@ class TicketSystem extends Component
 
     protected $paginationTheme = 'bootstrap';
     
-    // Arama ve filtreleme
+    // Search and filtering
     public string $search = '';
     public string $status = '';
     public string $priority = '';
     
-    // Modal kontrolleri
+    // Modal controllers
     public bool $showCreateModal = false;
     public bool $showEditModal = false;
     public bool $showResponseModal = false;
     
-    // Form alanları
+    // Form fields
     public $currentTicket = null;
     public string $title = '';
     public string $description = '';
     public string $selectedPriority = 'medium';
     public string $responseContent = '';
     
-    // Dinlenecek olaylar
+    // Events to listen
     protected $listeners = ['refreshTickets' => '$refresh'];
     
     protected function rules(): array
@@ -53,16 +53,17 @@ class TicketSystem extends Component
     }
     
     /**
-     * Kullanıcının admin olup olmadığını kontrol eder
+     * Checks if the user is an admin
      */
     protected function isAdmin(): bool
     {
         $user = Auth::user();
-        return $user && method_exists($user, 'isTicketAdmin') && $user->isTicketAdmin();
+
+        return $user && method_exists($user, 'getTicketAdmin') && $user->getTicketAdmin();
     }
     
     /**
-     * Arama değiştiğinde ilk sayfaya dön
+     * Redirects to the first page when the search changes
      */
     public function updatedSearch(): void
     {
@@ -70,7 +71,7 @@ class TicketSystem extends Component
     }
     
     /**
-     * Durum filtresi değiştiğinde ilk sayfaya dön
+     * Redirects to the first page when the status changes
      */
     public function updatedStatus(): void
     {
@@ -78,7 +79,7 @@ class TicketSystem extends Component
     }
     
     /**
-     * Öncelik filtresi değiştiğinde ilk sayfaya dön
+     * Redirects to the first page when the priority changes
      */
     public function updatedPriority(): void
     {
@@ -86,7 +87,7 @@ class TicketSystem extends Component
     }
     
     /**
-     * Yanıt modalı kapatıldığında ticket referansını temizle
+     * Cleans the ticket reference when the response modal is closed
      */
     public function updatedShowResponseModal($value): void
     {
@@ -96,7 +97,7 @@ class TicketSystem extends Component
     }
     
     /**
-     * Düzenleme modalı kapatıldığında ticket referansını temizle
+     * Cleans the ticket reference when the edit modal is closed
      */
     public function updatedShowEditModal($value): void
     {
@@ -109,24 +110,24 @@ class TicketSystem extends Component
     {
         $query = Ticket::query()->with('ticketable');
         
-        // Admin olmayan kullanıcılar sadece kendi ticketlarını görebilir
+        // Non-admin users can only see their own tickets
         if (!$this->isAdmin()) {
             $user = Auth::user();
             $query->where('ticketable_type', get_class($user))
                   ->where('ticketable_id', $user->id);
         }
         
-        // Status filtreleme
+        // Status filtering
         if (!empty($this->status)) {
             $query->where('status', $this->status);
         }
         
-        // Priority filtreleme
+        // Priority filtering
         if (!empty($this->priority)) {
             $query->where('priority', $this->priority);
         }
         
-        // Arama filtreleme - En son uygulayalım ki diğer filtrelerden etkilenmesin
+        // Search filtering - Apply last to avoid other filters affecting it
         if (!empty($this->search)) {
             $search = '%' . $this->search . '%';
             $query->where(function($q) use ($search) {
@@ -138,7 +139,7 @@ class TicketSystem extends Component
         return $query->latest()->paginate(config('ticket-system.per_page', 10));
     }
     
-    // Ticket oluşturma işlemleri
+    // Ticket creation processes
     public function openCreateModal(): void
     {
         $this->resetValidation();
@@ -166,10 +167,10 @@ class TicketSystem extends Component
         session()->flash('message', __('ticket-system::ticket-system.messages.created'));
     }
     
-    // Ticket düzenleme işlemleri
+    // Ticket editing processes
     public function openEditModal(Ticket $ticket): void
     {
-        // Admin olmayan kullanıcılar sadece kendi ticketlarını düzenleyebilir
+        // Non-admin users can only edit their own tickets
         if (!$this->isAdmin() && !$this->isOwner($ticket)) {
             session()->flash('error', __('ticket-system::ticket-system.messages.no_edit_permission'));
             return;
@@ -184,7 +185,7 @@ class TicketSystem extends Component
     }
     
     /**
-     * Ticketın sahibi olup olmadığını kontrol eder
+     * Checks if the ticket is owned by the user
      */
     protected function isOwner(Ticket $ticket): bool
     {
@@ -195,7 +196,7 @@ class TicketSystem extends Component
     
     public function updateTicket(): void
     {
-        // Admin olmayan kullanıcılar sadece kendi ticketlarını düzenleyebilir
+        // Non-admin users can only edit their own tickets
         if (!$this->isAdmin() && !$this->isOwner($this->currentTicket)) {
             session()->flash('error', __('ticket-system::ticket-system.messages.no_edit_permission'));
             return;
@@ -217,13 +218,13 @@ class TicketSystem extends Component
         session()->flash('message', __('ticket-system::ticket-system.messages.updated'));
     }
     
-    // Ticket yanıtlama işlemleri
+    // Ticket response processes
     public function openResponseModal($ticketId): void
     {
         $this->resetValidation();
         $this->reset(['currentTicket', 'responseContent']);
 
-        // Ticket ID ile ticketı bulup ilişkileri ile birlikte yükle
+        // Load the ticket with its responses and related models
         if (is_numeric($ticketId)) {
             $this->currentTicket = Ticket::with(['responses.respondable', 'ticketable'])
                                 ->findOrFail($ticketId);
@@ -242,7 +243,7 @@ class TicketSystem extends Component
         $user = Auth::user();
         $user->respondToTicket($this->currentTicket, $this->responseContent);
         
-        // Yanıt verildiğinde otomatik olarak ticket durumunu "in_progress" olarak güncelleme
+        // Automatically update the ticket status to "in_progress" when a response is submitted
         if ($this->currentTicket->isOpen()) {
             $this->currentTicket->markAsInProgress();
         }
@@ -251,10 +252,10 @@ class TicketSystem extends Component
         session()->flash('message', __('ticket-system::ticket-system.messages.responded'));
     }
     
-    // Ticket durumu değiştirme
+    // Ticket status change
     public function changeStatus(Ticket $ticket, string $status): void
     {
-        // Admin olmayan kullanıcılar sadece kendi ticketlarının durumunu değiştirebilir
+        // Non-admin users can only change the status of their own tickets
         if (!$this->isAdmin() && !$this->isOwner($ticket)) {
             session()->flash('error', __('ticket-system::ticket-system.messages.no_status_permission'));
             return;
@@ -281,7 +282,7 @@ class TicketSystem extends Component
     }
 
     /**
-     * Yanıtlama modalını kapat ve ilgili değişkenleri temizle
+     * Closes the response modal and clears the related variables
      */
     public function closeResponseModal(): void
     {
@@ -290,17 +291,17 @@ class TicketSystem extends Component
     }
 
     /**
-     * Ticket silme işlemi
+     * Ticket deletion process
      */
     public function deleteTicket(Ticket $ticket): void 
     {
-        // Silme yetkisi yoksa işlemi reddet
+        // If the user does not have delete permission, reject the operation
         if (!$this->isAdmin()) {
             session()->flash('error', __('ticket-system::ticket-system.messages.no_delete_permission'));
             return;
         }
 
-        // Ticket'ı ve ilişkili yanıtları sil
+        // Delete the ticket and its related responses
         $ticket->responses()->delete();
         $ticket->delete();
 

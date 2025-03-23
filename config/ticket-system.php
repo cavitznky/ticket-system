@@ -1,49 +1,45 @@
 <?php
 
-// config for Digitalcake/TicketSystem
 return [
     /*
     |--------------------------------------------------------------------------
-    | Ticket Sistemi Temel Ayarları
+    | Ticket System Basic Settings
     |--------------------------------------------------------------------------
     |
-    | Bu dosya, ticket sistemi için temel ayarları içerir.
+    | This file contains the basic settings for the ticket system.
     |
     */
 
-    // Sayfalama başına düşen ticket sayısı
+    // Ticket pagination per page
     'per_page' => 10,
 
-    // Tarih formatı
-    'date_format' => 'd.m.Y H:i',
 
-    // Ticket durumları
+    // Ticket statuses
     'statuses' => [
-        'open' => 'Açık',
-        'in_progress' => 'İşlemde',
-        'resolved' => 'Çözüldü',
-        'closed' => 'Kapalı',
+        'open' => 'Open',
+        'in_progress' => 'In Progress',
+        'resolved' => 'Resolved',
+        'closed' => 'Closed',
     ],
 
-    // Ticket öncelikleri
+    // Ticket priorities
     'priorities' => [
-        'low' => 'Düşük',
-        'medium' => 'Orta',
-        'high' => 'Yüksek',
-        'urgent' => 'Acil',
+        'low' => 'Low',
+        'medium' => 'Medium',
+        'high' => 'High',
+        'urgent' => 'Urgent',
     ],
     
     /*
     |--------------------------------------------------------------------------
-    | Admin Yetkilendirme
+    | Admin Authorization
     |--------------------------------------------------------------------------
     |
-    | Admin yetkisini belirleyen ayar. null ise admin yetkisi devre dışı olur.
-    | Bir metod adı verilirse, kullanıcı modelinde o metod çağrılarak
-    | admin yetkisi kontrol edilir.
+    | The setting to determine admin authorization. If null, admin authorization will be disabled.
+    | If a method name is provided, the method will be called on the user model to check admin authorization.
     |
     */
     
-    // Admin kontrolü için metod adı (null ise devre dışı)
-    'admin' => 'isAdmin',
+    // The method name to check admin authorization (null is disabled)
+    'admin' => 'isTicketAdmin',
 ];

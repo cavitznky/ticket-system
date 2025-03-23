@@ -97,4 +97,5 @@ return [
         'invalid_ticket' => 'Invalid ticket ID.',
     ],
     'unknown' => 'Unknown',
+    'confirm_delete' => 'Are you sure you want to delete this ticket? This action cannot be undone.',
 ]; 
