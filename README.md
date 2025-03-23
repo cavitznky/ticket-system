@@ -139,6 +139,125 @@ return [
 ];
 ```
 
+## Events
+
+This package provides the following events that you can listen to in your application:
+
+### TicketCreated
+
+Fired when a new ticket is created.
+
+```php
+use Digitalcake\TicketSystem\Events\TicketCreated;
+
+// In your EventServiceProvider
+protected $listen = [
+    TicketCreated::class => [
+        // Your listeners here
+    ],
+];
+
+// In your listener
+public function handle(TicketCreated $event)
+{
+    $ticket = $event->ticket;
+    // Do something with the ticket
+}
+```
+
+### TicketUpdated
+
+Fired when a ticket is updated.
+
+```php
+use Digitalcake\TicketSystem\Events\TicketUpdated;
+
+// In your EventServiceProvider
+protected $listen = [
+    TicketUpdated::class => [
+        // Your listeners here
+    ],
+];
+
+// In your listener
+public function handle(TicketUpdated $event)
+{
+    $ticket = $event->ticket;
+    $originalData = $event->originalData;
+    // Do something with the ticket and original data
+}
+```
+
+### TicketStatusChanged
+
+Fired when a ticket's status is changed.
+
+```php
+use Digitalcake\TicketSystem\Events\TicketStatusChanged;
+
+// In your EventServiceProvider
+protected $listen = [
+    TicketStatusChanged::class => [
+        // Your listeners here
+    ],
+];
+
+// In your listener
+public function handle(TicketStatusChanged $event)
+{
+    $ticket = $event->ticket;
+    $oldStatus = $event->oldStatus;
+    $newStatus = $event->newStatus;
+    // Do something with the ticket and status information
+}
+```
+
+### TicketResponseAdded
+
+Fired when a response is added to a ticket.
+
+```php
+use Digitalcake\TicketSystem\Events\TicketResponseAdded;
+
+// In your EventServiceProvider
+protected $listen = [
+    TicketResponseAdded::class => [
+        // Your listeners here
+    ],
+];
+
+// In your listener
+public function handle(TicketResponseAdded $event)
+{
+    $ticket = $event->ticket;
+    $response = $event->response;
+    // Do something with the ticket and response
+}
+```
+
+### TicketDeleted
+
+Fired when a ticket is deleted.
+
+```php
+use Digitalcake\TicketSystem\Events\TicketDeleted;
+
+// In your EventServiceProvider
+protected $listen = [
+    TicketDeleted::class => [
+        // Your listeners here
+    ],
+];
+
+// In your listener
+public function handle(TicketDeleted $event)
+{
+    $ticketId = $event->ticketId;
+    $ticketData = $event->ticketData;
+    // Do something with the ticket ID and data
+}
+```
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
