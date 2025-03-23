@@ -1,8 +1,8 @@
 {
-    "name": "digitalcake/ticket-system",
+    "name": "cavitznky/ticket-system",
     "description": "A comprehensive ticket system for Laravel applications with multi-language support",
     "keywords": [
-        "digitalcake",
+        "cavitznky",
         "laravel",
         "ticket-system",
         "livewire",
