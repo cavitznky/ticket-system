@@ -27,9 +27,53 @@ php artisan vendor:publish --tag="ticket-system-views"
 # Publish translations
 php artisan vendor:publish --tag="ticket-system-translations"
 
+# Publish Livewire component
+php artisan vendor:publish --tag="ticket-system-components"
+
+# Publish models
+php artisan vendor:publish --tag="ticket-system-models"
+
+# Publish traits
+php artisan vendor:publish --tag="ticket-system-traits"
+
+# Publish all components (Livewire, Models, Traits)
+php artisan vendor:publish --tag="ticket-system-all-components"
+
 # Or publish everything
 php artisan vendor:publish --provider="Digitalcake\TicketSystem\TicketSystemServiceProvider"
 ```
+
+## Customization
+
+### Customizing the components
+
+You can publish and modify all the components to adapt them to your needs:
+
+1. Publish the components you want to customize:
+```bash
+# For example, to customize the Livewire component
+php artisan vendor:publish --tag="ticket-system-components"
+```
+
+2. After publishing, the components will be available in your application:
+   - Livewire component: `app/Livewire/TicketSystem.php`
+   - Models: `app/Models/TicketSystem/`
+   - Traits: `app/Traits/TicketSystem/`
+
+3. Modify them according to your needs. When you publish a component, you take full control of it and it will no longer be updated when you update the package.
+
+### Using published components
+
+If you've published the Livewire component, make sure to update your view to use your application's namespace:
+
+```blade
+<livewire:ticket-system /> <!-- Uses the package component -->
+
+<!-- After publishing the Livewire component: -->
+<livewire:ticket-system /> <!-- Now uses your customized component in App\Livewire -->
+```
+
+Note: Laravel will automatically use the component from your application instead of the one from the package.
 
 ## Usage
 

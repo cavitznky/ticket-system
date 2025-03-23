@@ -50,5 +50,27 @@ class TicketSystemServiceProvider extends PackageServiceProvider
         $this->publishes([
             __DIR__ . '/../config/ticket-system.php' => config_path('ticket-system.php'),
         ], 'ticket-system-config');
+        
+        // Livewire bileşenlerini publish edilebilir hale getir
+        $this->publishes([
+            __DIR__ . '/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
+        ], 'ticket-system-components');
+        
+        // Modelleri publish edilebilir hale getir
+        $this->publishes([
+            __DIR__ . '/Models' => app_path('Models/TicketSystem'),
+        ], 'ticket-system-models');
+        
+        // Traits'leri publish edilebilir hale getir
+        $this->publishes([
+            __DIR__ . '/Traits' => app_path('Traits/TicketSystem'),
+        ], 'ticket-system-traits');
+        
+        // Tüm bileşenleri bir arada publish edebilmek için
+        $this->publishes([
+            __DIR__ . '/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
+            __DIR__ . '/Models' => app_path('Models/TicketSystem'),
+            __DIR__ . '/Traits' => app_path('Traits/TicketSystem'),
+        ], 'ticket-system-all-components');
     }
 }
