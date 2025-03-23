@@ -42,26 +42,26 @@ trait HasTickets
             'content' => $content,
         ]);
     }
-    
+
     /**
      * Checks if the user is an admin
-     * 
+     *
      * The admin method specified in the config is called, or false if it is not defined
      */
     public function getTicketAdmin(): bool
     {
         $adminMethod = config('ticket-system.admin');
-        
+
         // If the admin method is not defined, return false
         if ($adminMethod === null) {
             return false;
         }
-        
+
         // If the method exists, call it
         if (method_exists($this, $adminMethod)) {
             return $this->{$adminMethod}();
         }
-        
+
         return false;
     }
-} 
+}

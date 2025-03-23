@@ -3,8 +3,8 @@
 namespace Digitalcake\TicketSystem\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Ticket extends Model
 {
@@ -70,9 +70,9 @@ class Ticket extends Model
     {
         $this->update(['status' => 'closed']);
     }
-    
+
     public function reopen(): void
     {
         $this->update(['status' => 'open']);
     }
-} 
+}

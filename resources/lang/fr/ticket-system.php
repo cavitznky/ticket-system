@@ -98,4 +98,4 @@ return [
     ],
     'unknown' => 'Inconnu',
     'confirm_delete' => 'Êtes-vous sûr de vouloir supprimer ce ticket ? Cette action ne peut pas être annulée.',
-]; 
+];

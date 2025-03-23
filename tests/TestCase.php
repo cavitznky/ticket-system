@@ -2,9 +2,9 @@
 
 namespace Digitalcake\TicketSystem\Tests;
 
+use Digitalcake\TicketSystem\TicketSystemServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Digitalcake\TicketSystem\TicketSystemServiceProvider;
 
 class TestCase extends Orchestra
 {

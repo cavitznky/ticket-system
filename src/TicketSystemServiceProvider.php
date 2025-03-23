@@ -2,11 +2,11 @@
 
 namespace Digitalcake\TicketSystem;
 
+use Digitalcake\TicketSystem\Commands\TicketSystemCommand;
+use Digitalcake\TicketSystem\Livewire\TicketSystem;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Digitalcake\TicketSystem\Commands\TicketSystemCommand;
-use Livewire\Livewire;
-use Digitalcake\TicketSystem\Livewire\TicketSystem;
 
 class TicketSystemServiceProvider extends PackageServiceProvider
 {
@@ -25,7 +25,7 @@ class TicketSystemServiceProvider extends PackageServiceProvider
             ->hasCommand(TicketSystemCommand::class)
             ->hasTranslations();
     }
-    
+
     public function bootingPackage()
     {
         // Save the Livewire component
@@ -33,44 +33,44 @@ class TicketSystemServiceProvider extends PackageServiceProvider
 
         // Publish the migration files
         $this->publishes([
-            __DIR__ . '/../database/migrations/create_ticket_system_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_ticket_system_table.php'),
+            __DIR__.'/../database/migrations/create_ticket_system_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_ticket_system_table.php'),
         ], 'ticket-system-migrations');
-        
+
         // Publish the translation files
         $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/ticket-system'),
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/ticket-system'),
         ], 'ticket-system-translations');
-        
+
         // Publish the views
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/ticket-system'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/ticket-system'),
         ], 'ticket-system-views');
-        
+
         // Publish the config file
         $this->publishes([
-            __DIR__ . '/../config/ticket-system.php' => config_path('ticket-system.php'),
+            __DIR__.'/../config/ticket-system.php' => config_path('ticket-system.php'),
         ], 'ticket-system-config');
-        
+
         // Publish the Livewire components
         $this->publishes([
-            __DIR__ . '/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
+            __DIR__.'/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
         ], 'ticket-system-components');
-        
+
         // Publish the models
         $this->publishes([
-            __DIR__ . '/Models' => app_path('Models/TicketSystem'),
+            __DIR__.'/Models' => app_path('Models/TicketSystem'),
         ], 'ticket-system-models');
-        
+
         // Publish the traits
         $this->publishes([
-            __DIR__ . '/Traits' => app_path('Traits/TicketSystem'),
+            __DIR__.'/Traits' => app_path('Traits/TicketSystem'),
         ], 'ticket-system-traits');
-        
+
         // Publish all components together
         $this->publishes([
-            __DIR__ . '/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
-            __DIR__ . '/Models' => app_path('Models/TicketSystem'),
-            __DIR__ . '/Traits' => app_path('Traits/TicketSystem'),
+            __DIR__.'/Livewire/TicketSystem.php' => app_path('Livewire/TicketSystem.php'),
+            __DIR__.'/Models' => app_path('Models/TicketSystem'),
+            __DIR__.'/Traits' => app_path('Traits/TicketSystem'),
         ], 'ticket-system-all-components');
     }
 }

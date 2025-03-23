@@ -26,4 +26,4 @@ class TicketResponse extends Model
     {
         return $this->morphTo();
     }
-} 
+}

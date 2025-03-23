@@ -13,7 +13,6 @@ return [
     // Ticket pagination per page
     'per_page' => 10,
 
-
     // Ticket statuses
     'statuses' => [
         'open' => 'Open',
@@ -29,7 +28,7 @@ return [
         'high' => 'High',
         'urgent' => 'Urgent',
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Admin Authorization
@@ -39,7 +38,7 @@ return [
     | If a method name is provided, the method will be called on the user model to check admin authorization.
     |
     */
-    
+
     // The method name to check admin authorization (null is disabled)
     'admin' => 'isTicketAdmin',
 ];

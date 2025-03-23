@@ -98,4 +98,4 @@ return [
     ],
     'unknown' => 'Bilinmiyor',
     'confirm_delete' => 'Bu ticketı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
-]; 
+];
