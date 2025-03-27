@@ -197,7 +197,7 @@
                                                         <li>
                                                             <hr class="dropdown-divider">
                                                         </li>
-                                                        <li>
+                                                        <li class="d-none">
                                                             <a class="dropdown-item text-danger" href="#" wire:click.prevent="deleteTicket({{ $ticket->id }})" onclick="return confirm('{{ __('ticket-system::ticket-system.confirm_delete') }}')">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-danger me-1">
                                                                     <polyline points="3 6 5 6 21 6"></polyline>
