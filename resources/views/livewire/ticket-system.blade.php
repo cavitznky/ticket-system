@@ -194,7 +194,7 @@
                                                     @endif
 
                                                     @if ($isAdmin)
-                                                        <li>
+                                                        <li class="d-none">
                                                             <hr class="dropdown-divider">
                                                         </li>
                                                         <li class="d-none">
