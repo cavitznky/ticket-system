@@ -1,24 +1,12 @@
 <div>
-    @if (session()->has('message'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('message') }}
-        </div>
-    @endif
-
-    @if (session()->has('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">
+        <div class="card-header d-flex justify-content-between align-items-center border-0 pt-3">
+            <h1 class="mb-0 h5 fw-bold">
                 @if ($isAdmin)
                     <small class="badge bg-primary me-2">{{ __('ticket-system::ticket-system.admin_badge') }}</small>
                 @endif
                 {{ __('ticket-system::ticket-system.title') }}
-            </h4>
+            </h1>
             <button class="btn btn-primary" wire:click="openCreateModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -69,6 +57,18 @@
                     </button>
                 </div>
             </div>
+
+            @if (session()->has('message'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('message') }}
+                </div>
+            @endif
+
+            @if (session()->has('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                </div>
+            @endif
 
             {{-- Ticket table --}}
             <div class="table-responsive">
